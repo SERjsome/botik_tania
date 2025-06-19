@@ -160,7 +160,7 @@ async def cancel_day(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Функция очистки базы данных
 async def clear_data(update: Update, context):
     try:
-        admin_user_ids = [7728175615]
+        admin_user_ids = [8062513822]
         user_id = update.message.from_user.id
 
         if user_id not in admin_user_ids:
