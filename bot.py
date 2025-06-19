@@ -184,7 +184,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Основной запуск
 def main():
     try:
-        BOT_TOKEN = "7689018373:AAGo3MurUATY6PBvDXZRnYImoTL1VNErqzI"
+        BOT_TOKEN = "8028021620:AAFUf3q77NT9Xq0_LQbkzrzGajTXR4f3vXg"
         application = Application.builder().token(BOT_TOKEN).build()
 
         application.add_handler(CommandHandler("start", start))
