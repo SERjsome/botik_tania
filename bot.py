@@ -70,7 +70,7 @@ async def request_off_day(update: Update, context):
             requests[date] = {}
 
         if name in requests[date]:
-            await update.message.reply_text(f"На {date} для анкеты {name} уже был принят выходной.",
+            await update.message.reply_text(f"На {date} для анкеты {name} уже был принят выходной. Не могу предоставить другой выходной в этот день.",
                                             reply_markup=show_main_keyboard())
             return
 
