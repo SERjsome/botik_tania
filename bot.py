@@ -10,7 +10,7 @@ valid_names = ["Виолетта", "Нести", "Мари", "Лила", "Ева
 name_regex = re.compile(r'^(?:' + '|'.join(valid_names) + r')$')
 date_regex = re.compile(r'^\d{2}\.\d{2}$')
 
-admin_user_ids = [7728175615, 7509647993]
+admin_user_ids = [8062513822, 7500867626]
 
 CHANGE_TAG_NEW = range(1)
 
