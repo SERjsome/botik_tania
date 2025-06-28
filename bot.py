@@ -203,7 +203,7 @@ async def cancel_day(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def clear_data(update: Update, context):
     try:
-        admin_user_ids = [7728175615]
+        admin_user_ids = [8062513822]
         if update.message.from_user.id not in admin_user_ids:
             await update.message.reply_text("У вас нет доступа к этой команде.")
             return
