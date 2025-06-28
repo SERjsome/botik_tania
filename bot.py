@@ -10,7 +10,7 @@ valid_names = ["Виолетта", "Нести", "Мари", "Лила", "Ева
 name_regex = re.compile(r'^(?:' + '|'.join(valid_names) + r')$')
 date_regex = re.compile(r'^\d{2}\.\d{2}$')
 
-admin_user_ids = [8062513822, 7500867626]
+admin_user_ids = [7728175615, 7509647993]
 
 CHANGE_TAG_NEW = range(1)
 
@@ -44,7 +44,10 @@ async def show_admin_panel(update: Update, context):
             buttons = []
             for name, data in requests[date].items():
                 text += f"  — {name} ({data['shift']}) — {data['username']}\n"
-                buttons.append([InlineKeyboardButton(f"Изменить тег: {name}", callback_data=f"tag:{name}:{date}")])
+                buttons.append([
+                    InlineKeyboardButton(f"✏️ Тег: {name}", callback_data=f"tag:{name}:{date}"),
+                    InlineKeyboardButton("❌ Отменить", callback_data=f"admincancel:{name}:{date}")
+                ])
 
             text += "\n"
             await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(buttons))
@@ -229,6 +232,24 @@ async def cancel_day(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(f"Ошибка в cancel_day: {e}")
         await query.edit_message_text("Произошла ошибка при отмене выходного.")
 
+# 💥 Новая функция: отмена выходного через админ-панель
+async def admin_cancel_day(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    try:
+        _, name, date = query.data.split(":")
+        if date in requests and name in requests[date]:
+            del requests[date][name]
+            if not requests[date]:
+                del requests[date]
+            await query.edit_message_text(f"✅ Админом отменён выходной {name} на {date}.")
+        else:
+            await query.edit_message_text("Выходной не найден.")
+    except Exception as e:
+        print(f"Ошибка в admin_cancel_day: {e}")
+        await query.edit_message_text("Ошибка при отмене.")
+
 async def show_available_days(update: Update, context: ContextTypes.DEFAULT_TYPE, offset=0):
     today = datetime.now()
     available_days = []
@@ -298,7 +319,6 @@ async def clear_data(update: Update, context):
         print(f"Ошибка в clear_data: {e}")
         await update.message.reply_text("Ошибка при очистке.")
 
-# --- Новая функция: список выходных на 14 дней вперёд ---
 async def show_days_overview_for_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     if user_id not in admin_user_ids:
@@ -340,6 +360,7 @@ def main():
         application.add_handler(tag_change_handler)
         application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, request_off_day))
         application.add_handler(CallbackQueryHandler(cancel_day, pattern=r"^cancel:"))
+        application.add_handler(CallbackQueryHandler(admin_cancel_day, pattern=r"^admincancel:"))
         application.add_handler(CallbackQueryHandler(handle_page_callback, pattern=r"^page:"))
         application.add_handler(CommandHandler("clear", clear_data))
         application.add_handler(CommandHandler("admin", show_admin_panel))
